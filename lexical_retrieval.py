@@ -1,15 +1,24 @@
-import os
-
 import nltk
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from colorama import Fore, Style
+
+import config
+import utils
 
 
+def create_retrieval_engine(top_k: int):
+    """
+    Create a retrieval engine based on TF-IDF similarity.
 
+    Args:
+        top_k (int): Number of top passages to retrieve.
 
-def create_retrieval_engine():
-    corpus = load_dataset(data_file="J. K. Rowling - Harry Potter 1 - Sorcerer's Stone.txt")
+    Returns:
+        None
+    """
+    corpus = utils.load_dataset(data_file=config.DATASET)
     sentences = nltk.tokenize.sent_tokenize(corpus)
 
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
@@ -20,10 +29,13 @@ def create_retrieval_engine():
     tfidf_matrix = tfidf_vectorizer.fit_transform(sentences_df.sentences)
 
     # Define example search queries
-    example_queries = ["Harry Potter is Lord Voldemort Nemesis", "Hogwarts Train", "Spells and potions"]
+    queries = [
+        "What magical objects are featured in Harry Potter and the Philosopher's Stone?",
+        "What is the name of the school attended by wizards in Harry Potter?",
+        "Who are Harry Potter's friends in Harry Potter and the Philosopher's Stone?"
+    ]
 
-    top_n = 5
-    for query in example_queries:
+    for query in queries:
         query = query.lower()
         # Transform the query to TF-IDF vector
         query_tfidf = tfidf_vectorizer.transform([query])
@@ -31,21 +43,17 @@ def create_retrieval_engine():
         # Calculate cosine similarity between query and each document
         cosine_similarities = cosine_similarity(query_tfidf, tfidf_matrix).flatten()
 
+        # Sort indices based on cosine similarity
         indices_and_similarities = [(idx, val) for idx, val in enumerate(cosine_similarities)]
-        # Sort and keep the top N entries
         indices_and_similarities.sort(key=lambda item: item[1], reverse=True)
         if indices_and_similarities:  # check if list is not empty
-            indices, similarities = zip(*indices_and_similarities[:top_n])
+            top_passages_indices, _ = zip(*indices_and_similarities[:top_k])
 
-        # Get the indices of passages with top TF-IDF scores
-        top_passages_indices = cosine_similarities.argsort()[-5:][::-1]
-
-        print(f"Top 5 passages for query '{query}' :")
-        for idx, sentence_pos in enumerate(top_passages_indices, 1):
-            print(f"Passage {idx}:", sentences[sentence_pos], '\n', "simi")
-
+            # Print top passages for the query
+            print(Fore.BLUE + f"Top {top_k} passages for query '{query}':" + Style.RESET_ALL)
+            for idx, sentence_pos in enumerate(top_passages_indices, 1):
+                print(Fore.RED + f"Passage {idx}:" + Style.RESET_ALL, sentences[sentence_pos])
 
 
 if __name__ == '__main__':
-    # retrieve_documents_tfidf()
-    create_retrieval_engine()
+    create_retrieval_engine(top_k=5)

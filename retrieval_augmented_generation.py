@@ -10,7 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplat
 from llama_index.core import ServiceContext, GPTVectorStoreIndex, Document, StorageContext, load_index_from_storage
 
 import config as retrieval_config
-from minilm_retrieval import load_dataset
+from utils import load_dataset
 
 
 class RAGPassagesExtractionPipeline:
