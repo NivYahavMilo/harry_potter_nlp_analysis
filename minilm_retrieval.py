@@ -139,7 +139,7 @@ def semantic_retrieval(queries, top_k=5, evaluate_embeddings_space: bool = False
 if __name__ == '__main__':
 
     # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Retrieve top passages using TF-IDF similarity.')
+    parser = argparse.ArgumentParser(description='Retrieve top passages using MiniLM.')
     parser.add_argument('--top_k', type=int, default=5, help='Number of top passages to retrieve (default: 5)')
     parser.add_argument('--eval', type=bool, default=False, help='Evaluate embedding space')
     args = parser.parse_args()
