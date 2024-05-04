@@ -1,3 +1,5 @@
+import argparse
+
 import nltk
 import pandas as pd
 from colorama import Fore, Style
@@ -57,10 +59,16 @@ def lexical_retrieving(queries: list[str], top_k: int):
 
 
 if __name__ == '__main__':
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Retrieve top passages using TF-IDF similarity.')
+    parser.add_argument('--top_k', type=int, default=5, help='Number of top passages to retrieve (default: 5)')
+    args = parser.parse_args()
+
     # Define example search queries
     query_list = [
         "What magical objects are featured in the book?",
         "what are the rules in the quidditch game?",
         "Who are Harry Potter's friends in Harry Potter and the Philosopher's Stone?"
     ]
-    lexical_retrieving(queries=query_list, top_k=5)
+    lexical_retrieving(queries=query_list, top_k=args.top_k)

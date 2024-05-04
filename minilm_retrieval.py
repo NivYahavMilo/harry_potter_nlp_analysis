@@ -1,3 +1,5 @@
+import argparse
+
 import matplotlib.pyplot as plt
 import nltk.tokenize
 import numpy as np
@@ -135,13 +137,20 @@ def semantic_retrieval(queries, top_k=5, evaluate_embeddings_space: bool = False
 
 
 if __name__ == '__main__':
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description='Retrieve top passages using TF-IDF similarity.')
+    parser.add_argument('--top_k', type=int, default=5, help='Number of top passages to retrieve (default: 5)')
+    parser.add_argument('--eval', type=bool, default=False, help='Evaluate embedding space')
+    args = parser.parse_args()
+
     semantic_retrieval(
         queries=[
             "What magical objects are featured in Harry Potter and the Philosopher's Stone?",
             "What is the name of the school attended by wizards in Harry Potter?",
             "Who are Harry Potter's friends in Harry Potter and the Philosopher's Stone?"
         ],
-        evaluate_embeddings_space=True,
-        top_k=5
+        evaluate_embeddings_space=args.eval,
+        top_k=args.top_k
 
     )
