@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import nltk.tokenize
 import numpy as np
 import seaborn as sns
+from colorama import Fore, Style
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from colorama import Fore, Style
 
 import config
 import utils
@@ -109,6 +109,7 @@ def semantic_retrieval(queries, top_k=5, evaluate_embeddings_space: bool = False
         print("Evaluating vector space...")
         evaluate_vector_space(sentence_embeddings)
 
+    passages_retrieved = {}
     for query in queries:
         # Embed the query
         query_embedding = model.encode(query)
@@ -122,9 +123,15 @@ def semantic_retrieval(queries, top_k=5, evaluate_embeddings_space: bool = False
         # Retrieve top passages
         print(Fore.BLUE + "Query:", query)
         for idx in ranked_indices[:top_k]:
+            passage_retrieved = sentences[idx]
             print(Fore.RED + "Similarity Score:", similarity_scores[idx])
-            print(Fore.GREEN + "Passage:", sentences[idx])
+            print(Fore.GREEN + "Passage:", passage_retrieved)
+
+            # Storing Results.
+            passages_retrieved.setdefault(query, []).append(passage_retrieved)
         print(Style.RESET_ALL)
+
+    return passages_retrieved
 
 
 if __name__ == '__main__':

@@ -10,7 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplat
 from llama_index.core import ServiceContext, GPTVectorStoreIndex, Document, StorageContext, load_index_from_storage
 
 import config as retrieval_config
-from utils import load_dataset
+import utils
 
 
 class RAGPassagesExtractionPipeline:
@@ -53,7 +53,7 @@ class RAGPassagesExtractionPipeline:
         Creates a new vector store index and saves it to disk.
         """
         print(Fore.GREEN + "Creating vector store index as retrieval engine..." + Style.RESET_ALL)
-        corpus = load_dataset(data_file=retrieval_config.DATASET)
+        corpus = utils.load_dataset(data_file=retrieval_config.DATASET)
         document_obj = Document(text=corpus)
         index = GPTVectorStoreIndex.from_documents(
             [document_obj],

@@ -1,25 +1,26 @@
 import nltk
 import pandas as pd
+from colorama import Fore, Style
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from colorama import Fore, Style
 
 import config
 import utils
 
 
-def create_retrieval_engine(top_k: int):
+def lexical_retrieving(queries: list[str], top_k: int):
     """
     Create a retrieval engine based on TF-IDF similarity.
 
     Args:
+        queries (list): queries for passages retrieval.
         top_k (int): Number of top passages to retrieve.
 
     Returns:
         None
     """
     corpus = utils.load_dataset(data_file=config.DATASET)
-    sentences = nltk.tokenize.sent_tokenize(corpus)
+    sentences = nltk.tokenize.sent_tokenize(corpus.lower())
 
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
     sentences_df = pd.DataFrame({"sentences": sentences})
@@ -28,17 +29,11 @@ def create_retrieval_engine(top_k: int):
     # Fit and transform the corpus to TF-IDF matrix
     tfidf_matrix = tfidf_vectorizer.fit_transform(sentences_df.sentences)
 
-    # Define example search queries
-    queries = [
-        "What magical objects are featured in Harry Potter and the Philosopher's Stone?",
-        "What is the name of the school attended by wizards in Harry Potter?",
-        "Who are Harry Potter's friends in Harry Potter and the Philosopher's Stone?"
-    ]
-
+    passages_retrieved = {}
     for query in queries:
-        query = query.lower()
+        query_cased = query.lower()
         # Transform the query to TF-IDF vector
-        query_tfidf = tfidf_vectorizer.transform([query])
+        query_tfidf = tfidf_vectorizer.transform([query_cased])
 
         # Calculate cosine similarity between query and each document
         cosine_similarities = cosine_similarity(query_tfidf, tfidf_matrix).flatten()
@@ -52,8 +47,20 @@ def create_retrieval_engine(top_k: int):
             # Print top passages for the query
             print(Fore.BLUE + f"Top {top_k} passages for query '{query}':" + Style.RESET_ALL)
             for idx, sentence_pos in enumerate(top_passages_indices, 1):
-                print(Fore.RED + f"Passage {idx}:" + Style.RESET_ALL, sentences[sentence_pos])
+                passage_candidate = sentences[sentence_pos]
+                print(Fore.RED + f"Passage {idx}:" + Style.RESET_ALL, passage_candidate)
+
+                # Storing results per query
+                passages_retrieved.setdefault(query, []).append(passage_candidate)
+
+    return passages_retrieved
 
 
 if __name__ == '__main__':
-    create_retrieval_engine(top_k=5)
+    # Define example search queries
+    query_list = [
+        "What magical objects are featured in the book?",
+        "what are the rules in the quidditch game?",
+        "Who are Harry Potter's friends in Harry Potter and the Philosopher's Stone?"
+    ]
+    lexical_retrieving(queries=query_list, top_k=5)
