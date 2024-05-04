@@ -63,3 +63,21 @@ run with the following command:
 
 ``python3 retrieval_augmented_generation.py
 ``
+
+
+### Retrieval Evaluation Script
+
+The `retrieval_evaluation.py` script is used to evaluate the performance of retrieval systems based on TF-IDF against ground truth passages. It calculates various metrics such as Precision@k, Recall@k, ROUGE, and BLEU scores.
+
+#### requirements:
+````
+evaluate==0.4.2
+rouge-score==0.1.2
+````
+
+#### Usage
+
+You can run the script with the following command:
+
+```bash
+python retrieval_evaluation.py 
