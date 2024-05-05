@@ -1,3 +1,4 @@
+import argparse
 import os
 from typing import Optional
 
@@ -107,5 +108,11 @@ class RAGPassagesExtractionPipeline:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Interactive Harry Potter Passage Retrieval System')
+    parser.add_argument('--openai_key', required=True)
+    args = parser.parse_args()
+
+    os.environ['OPENAI_API_KEY'] = args.openai_key
+
     retrieval_pipeline = RAGPassagesExtractionPipeline()
     retrieval_pipeline.interactive_passages_retrieval()
