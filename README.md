@@ -61,13 +61,13 @@ llama-index-embeddings-langchain==0.1.2
 
 run with the following command:
 
-``python3 retrieval_augmented_generation.py
+``python3 retrieval_augmented_generation.py  --openai_key sk-**********
 ``
 
 
 ### Retrieval Evaluation Script
 
-The `retrieval_evaluation.py --openai_key **********` script is used to evaluate the performance of retrieval systems based on TF-IDF against ground truth passages. It calculates various metrics such as Precision@k, Recall@k, ROUGE, and BLEU scores.
+The `retrieval_evaluation.py` script is used to evaluate the performance of retrieval systems based on TF-IDF against ground truth passages. It calculates various metrics such as Precision@k, Recall@k, ROUGE, and BLEU scores.
 
 #### requirements:
 ````
